@@ -1,0 +1,58 @@
+body {
+  font-family: Helvetica, helvetica, "helvetica neue", Verdana, sans-serif;
+  line-height: 1.4;
+  background-color: #20150c;
+  color: #c0b5ac; }
+
+p {
+  font-size: 12px;
+  color: #50453c;
+  margin: 0 0 10px 0; }
+
+label {
+  color: #c0b5ac; }
+
+a,
+a:visited {
+  color: #50453c; }
+
+br {
+  clear: both; }
+
+.gameOfLife {
+  position: relative;
+  line-height: 0;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none; }
+
+.startBtn {
+  margin-bottom: 10px; }
+
+.gameOfLife i {
+  display: block;
+  position: relative;
+  background-color: #30251c;
+  float: left;
+  border-radius: 7px;
+  width: 14px;
+  height: 14px;
+  cursor: pointer; }
+
+.running .gameOfLife i {
+  -webkit-transition: all 0.1s ease-out;
+  -moz-transition: all 0.1s ease-out;
+  -transition: all 0.1s ease-out; }
+
+.gameOfLife i.alive {
+  background-color: #c2dd96;
+  z-index: 1; }
+
+.gameOfLife i:hover {
+  background-color: #94bee6;
+  z-index: 2; }
+
+.gameOfLife i.alive:hover {
+  background-color: #f4ffc8;
+  box-shadow: 0 0 0 1px #f4ffc8;
+  z-index: 2; }
