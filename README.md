@@ -5,6 +5,15 @@ gameOfLife
 
 Each cell on the screen is an autonomous Backbone Model, aware of its neighbors and how it should behave in this environment.
 
+## Approach
+
+* Figure out how many rows and cols will fit on the screen
+* Create a list of cells. Each cell is a Backbone Model/View pair.
+* Each cell knows it's x/y coord
+* Each cell calculates references to its 8 neighbors one time
+* Every step of the application, cells decide whether they're going to live or die in the next frame
+* Then the app tells every cell to advance one frame
+
 This isn't very performant, since there's overhead involved in standing up a self-aware model for each cell,
 but it is idiomatic for a Backbone app and results in code with clear separation of responsibility.
 
@@ -21,9 +30,7 @@ Using model properties that throw events only for properties where they're reall
 * use rAF?
 * No more than N cells wide, if it goes bigger, grow the cell size
 * No narrower than M cells narrow, if it goes narrower, shrink the cell size
-* Improve compute performance
-  * Don't recompute the whole grid every time, only neighbors
-  * Measure perf again
+* #perf: Don't recompute the whole grid every time, only neighbors
 * Remove Backbone, do in vanilla
 * Pause while dragging, resume right after
 * Pause should resume after N seconds of **inactivity**, so you aren't rushed when drawing
