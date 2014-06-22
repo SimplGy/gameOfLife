@@ -82,7 +82,7 @@
     },
     randomize: function() {
       this.set("willLive", null);
-      return this.set("isAlive", !!(Math.round(Math.random() * 10) % 2));
+      return this.set("isAlive", !(Math.round(Math.random() * 10) % 5));
     },
     compete: function() {
       var count, i;

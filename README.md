@@ -9,10 +9,10 @@ Each cell on the screen is an autonomous Backbone Model, aware of its neighbors 
 
 ## Planned Features
 
-* Recalculate the sizing every window resize
+
 * No more than N cells wide, if it goes bigger, grow the cell size
 * No narrower than M cells narrow, if it goes narrower, shrink the cell size
-* Instead of start/stop, have the simulation always running, but introduce a pause button that sleeps it for N seconds--long enough to draw one of the game of life launchers or other patterns
+* Recalculate the sizing every window resize
 * Improve draw performance
   * Use absolute positioning instead of floating
   * Get each draw on an isolated layer
@@ -22,6 +22,8 @@ Each cell on the screen is an autonomous Backbone Model, aware of its neighbors 
   * Don't recompute the whole grid every time, only neighbors
   * Remove obviously dumb things from the compute loop (like loop twice, once to `compete` and once to `step`)
   * Measure perf again
+* Remove Backbone, do in vanilla
+* Show a countdown timer on the pause button
 * Restructure so github pages can deploy it for me
 * Do the metabolism as a "speed" slider so it's less arcane looking
 * Remove the randomize button, but have the simulation always start randomized. Or maybe randomized only in the center area which might look nice.
@@ -32,3 +34,4 @@ Each cell on the screen is an autonomous Backbone Model, aware of its neighbors 
 ## Completed
 
 * Convert to coffeescript, because why type moar?
+* Instead of start/stop, have the simulation always running, but introduce a pause button that sleeps it for N seconds--long enough to draw one of the game of life launchers or other patterns

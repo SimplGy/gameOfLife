@@ -89,7 +89,7 @@ Model = Backbone.Model.extend(
 
   randomize: ->
     @set "willLive", null
-    @set "isAlive", !!(Math.round(Math.random() * 10) % 2)
+    @set "isAlive", !(Math.round(Math.random() * 10) % 5) # one in five chance
 
 
   # Look at neighbors and determine if I should stay alive, stay dead, be born, or die

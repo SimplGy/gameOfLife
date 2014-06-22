@@ -1,6 +1,7 @@
 
 Application = undefined
 _defaultMetabolism = 100
+_pauseLength = 3 * 1000
 Application = Backbone.View.extend(
   events:
     touchstart: "startPress"
@@ -19,11 +20,12 @@ Application = Backbone.View.extend(
     @columns = columns
     @rows = rows
     @cellSize = size
-    @paused = true
     @setElement "#GameOfLife"
     @buildCells()
     @render()
-    $("#Start").on "click", @toggleBtnClicked
+    @randomize()
+    @live()
+    $("#Pause").on "click", @onPauseBtnClick
     $("#Clear").on "click", @cleanSlate
     $("#Random").on "click", @randomize
 
@@ -64,11 +66,17 @@ Application = Backbone.View.extend(
       cell.calculateNeighbors cell2d
     ).bind(this)
 
-  toggleBtnClicked: ->
-    if @paused
+  onPauseBtnClick: ->
+#    return if @paused
+    $("#Pause").attr 'disabled', true
+    @stop()
+    setTimeout =>
+      $("#Pause").removeAttr 'disabled'
       @start()
-    else
-      @stop()
+    , _pauseLength
+
+
+
 
   stop: ->
     $("body").removeClass "running"
