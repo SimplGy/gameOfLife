@@ -9,41 +9,31 @@
     <script src="../lib/underscore/underscore-min.js"></script>
     <script src="../lib/backbone/backbone-min.js"></script>
     <!-- Mineeeee! -->
-    <script src="app.js"></script>
+    <script src="gameRunner.js"></script>
     <script src="cell.js"></script>
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
 
+
+<div id="GameOfLife" class="gameOfLife"></div>
 <p>
     <button id="Pause">Pause</button>
     <button id="Clear">Clear</button>
-    <!--<button id="Random">Randomize</button>-->
-    <label for="Metabolism">Metabolism</label>
-    <input id="Metabolism" type="text" size="3" placeholder="100"/>
+    <label for="Metabolism">Speed</label>
+    <input id="Metabolism" type="range" min="0" max="100" value="75" />
 </p>
 <p>
     This is a Backbone.js implementation of <a href="http://en.wikipedia.org/wiki/Conway_game_of_life">Conway's Game of Life</a>. On
     <a href="https://github.com/SimpleAsCouldBe/gameOfLife">github</a>.
 </p>
-<div id="GameOfLife" class="gameOfLife"></div>
-
 
 
 
 <script>
-    // Determine game size by Screen size
-    var gameOfLife,
-        cellSize = 14,
-        availWidth = window.innerWidth - 40,
-        availHeight = window.innerHeight - 80,
-        colCount = Math.floor( availWidth / cellSize ),
-        rowCount = Math.floor( availHeight / cellSize )
-
-    ;$(function(){
-        gameOfLife = new Application(colCount, rowCount, cellSize)
-    })
+  var game = new GameRunner()
 </script>
+
 </body>
 </html>

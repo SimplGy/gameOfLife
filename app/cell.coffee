@@ -11,12 +11,14 @@ View = Backbone.View.extend(
   initialize: ->
     _.bindAll this
     @model.on "change:isAlive", @render
-    @render @model
+    @$el.css
+      width: @model.get 'size'
+      height: @model.get 'size'
+    @render()
 
-  render: (model) ->
-
+  render: ->
     # Change the visual representation of aliveness
-    if model.get("isAlive")
+    if @model.get("isAlive")
       @$el.addClass "alive"
     else
       @$el.removeAttr "class"
@@ -89,7 +91,7 @@ Model = Backbone.Model.extend(
 
   randomize: ->
     @set "willLive", null
-    @set "isAlive", !(Math.round(Math.random() * 10) % 5) # one in five chance
+    @set "isAlive", !(Math.round(Math.random() * 10) % 5) # one in three chance
 
 
   # Look at neighbors and determine if I should stay alive, stay dead, be born, or die

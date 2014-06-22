@@ -2,7 +2,9 @@ body {
   font-family: Helvetica, helvetica, "helvetica neue", Verdana, sans-serif;
   line-height: 1.4;
   background-color: #20150c;
-  color: #c0b5ac; }
+  color: #c0b5ac;
+  margin: 0;
+  padding: 0; }
 
 p {
   font-size: 12px;
@@ -24,7 +26,8 @@ br {
   line-height: 0;
   user-select: none;
   -moz-user-select: none;
-  -webkit-user-select: none; }
+  -webkit-user-select: none;
+  margin-bottom: 20px; }
 
 .startBtn {
   margin-bottom: 10px; }
@@ -34,15 +37,10 @@ br {
   position: relative;
   background-color: #30251c;
   float: left;
-  border-radius: 7px;
+  border-radius: 50%;
   width: 14px;
   height: 14px;
   cursor: pointer; }
-
-.running .gameOfLife i {
-  -webkit-transition: all 0.1s ease-out;
-  -moz-transition: all 0.1s ease-out;
-  -transition: all 0.1s ease-out; }
 
 .gameOfLife i.alive {
   background-color: #c2dd96;

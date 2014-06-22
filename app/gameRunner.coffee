@@ -1,54 +1,63 @@
 
-Application = undefined
-_defaultMetabolism = 100
 _pauseLength = 3 * 1000
-Application = Backbone.View.extend(
+_cellsWide = 75
+
+GameRunner = Backbone.View.extend(
   events:
     touchstart: "startPress"
     mousedown: "startPress"
     mouseup: "endPress"
     touchend: "endPress"
 
-  startPress: ->
-    @isPressing = true
-
-  endPress: ->
-    @isPressing = false
-
-  initialize: (columns, rows, size) ->
+  initialize: ->
     _.bindAll this
-    @columns = columns
-    @rows = rows
-    @cellSize = size
     @setElement "#GameOfLife"
-    @buildCells()
     @render()
-    @randomize()
-    @live()
+    $(window).on "resize", _.debounce @render, 100
+    # UI Event Bindings
     $("#Pause").on "click", @onPauseBtnClick
     $("#Clear").on "click", @cleanSlate
     $("#Random").on "click", @randomize
+    $("#Metabolism").on "change", @onMetabolismChange
+
+  render: ->
+    @stop()
+    @buildCells()
+    @randomize()
+    @start()
+
+
+  startPress: -> @isPressing = true
+  endPress: -> @isPressing = false
 
   buildCells: ->
+    @$el.empty()
+    console.log 'buildCells'
 
-    #console.log("Building a grid with " + this.columns + " columns and "+ this.rows +" rows")
-    i = undefined
+    availWidth = window.innerWidth
+    availHeight = window.innerHeight
+    # What size should each cell be?
+    cellSize = availWidth / _cellsWide
+    # How many cells wide and tall will fit?
+    @cols = Math.floor availWidth / cellSize
+    @rows = Math.floor availHeight / cellSize
+
     j = undefined
     curModel = undefined
     curView = undefined
     cell2d = []
     @cells = []
 
-    # Build a new CellModel for every column & row
+    # Build a new CellView and CellModel for every column + row
     i = 0
     while i < @rows
       cell2d[i] = []
       j = 0
-      while j < @columns
+      while j < @cols
         curModel = new CellModel(
           x: i
           y: j
-          size: @cellSize
+          size: cellSize
         )
         curView = new CellView(
           model: curModel
@@ -66,6 +75,17 @@ Application = Backbone.View.extend(
       cell.calculateNeighbors cell2d
     ).bind(this)
 
+
+
+  # -------------------------------------------- Run Loop
+  live: ->
+    _.each @cells, (cell) -> cell.compete()         # Determine what to do in the next step
+    _.each @cells, (cell) -> cell.step()            # Live out the next step
+    setTimeout @live, @metabolism  unless @paused   # Keep on simulating life
+
+
+
+  # -------------------------------------------- User Actions
   onPauseBtnClick: ->
 #    return if @paused
     $("#Pause").attr 'disabled', true
@@ -75,9 +95,6 @@ Application = Backbone.View.extend(
       @start()
     , _pauseLength
 
-
-
-
   stop: ->
     $("body").removeClass "running"
     @paused = true
@@ -86,14 +103,9 @@ Application = Backbone.View.extend(
   start: ->
     $("body").addClass "running"
     @paused = false
-    @metabolism = $("#Metabolism").val() or _defaultMetabolism
+    @onMetabolismChange()
     @live()
     $("#Start").text "Stop"
-
-  live: ->
-    _.each @cells, (cell) -> cell.compete()         # Determine what to do in the next step
-    _.each @cells, (cell) -> cell.step()            # Live out the next step
-    setTimeout @live, @metabolism  unless @paused   # Keep on simulating life
 
   cleanSlate: ->
     _.each @cells, (cell) -> cell.kill()
@@ -103,8 +115,12 @@ Application = Backbone.View.extend(
   randomize: ->
     _.each @cells, (cell) ->
       cell.randomize()
+
+  onMetabolismChange: ->
+    speed = $("#Metabolism").val()                # 0-100 scale
+    @metabolism = Math.abs(speed - 100) * 2 + 10  # Convert to a frame rate where lower is faster
 )
 
 # Publicize
-window.Application = Application
+window.GameRunner = GameRunner
 

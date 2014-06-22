@@ -14,10 +14,14 @@
     initialize: function() {
       _.bindAll(this);
       this.model.on("change:isAlive", this.render);
-      return this.render(this.model);
+      this.$el.css({
+        width: this.model.get('size'),
+        height: this.model.get('size')
+      });
+      return this.render();
     },
-    render: function(model) {
-      if (model.get("isAlive")) {
+    render: function() {
+      if (this.model.get("isAlive")) {
         return this.$el.addClass("alive");
       } else {
         return this.$el.removeAttr("class");
