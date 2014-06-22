@@ -10,18 +10,26 @@ View = Backbone.View.extend(
 
   initialize: ->
     _.bindAll this
-    @model.on "change:isAlive", @render
-    @$el.css
-      width: @model.get 'size'
-      height: @model.get 'size'
+    @model.on "change:isAlive", @onChangeIsAlive
     @render()
 
   render: ->
-    # Change the visual representation of aliveness
+    size = @model.get 'size'
+    transform = "translate3d(#{size * @model.get 'y'}px, #{size * @model.get 'x'}px, 0)"
+    @$el.css
+      width:  size
+      height: size
+#      left:   size * @model.get 'y' # the x/y is backwards, but works for the other methods
+#      top:    size * @model.get 'x'
+      '-webkit-transform': transform # Faster than pos:abs. Like 4ms vs 8ms per step
+      '-moz-transform': transform
+
+# Change the visual representation of aliveness
+  onChangeIsAlive: ->
     if @model.get("isAlive")
       @$el.addClass "alive"
     else
-      @$el.removeAttr "class"
+      @$el.removeClass "alive"
 
   mouseover: ->
     if @options.app.isPressing and not @alreadyToggled
@@ -44,7 +52,6 @@ View = Backbone.View.extend(
 Model = Backbone.Model.extend(
   defaults:
     isAlive: false
-    willLive: null
     x: null
     y: null
     size: null
@@ -83,52 +90,41 @@ Model = Backbone.Model.extend(
   toggle: ->
     @set "isAlive", not @get("isAlive")
 
-  kill: ->
-    @set "willLive", false
+  kill: -> @willLive = false
 
-  birth: ->
-    @set "willLive", true
+  birth: -> @willLive = true
 
   randomize: ->
-    @set "willLive", null
-    @set "isAlive", !(Math.round(Math.random() * 10) % 5) # one in three chance
+    @willLive = null
+    @set "isAlive", !(Math.round(Math.random() * 10) % 5) # one in five chance
 
 
   # Look at neighbors and determine if I should stay alive, stay dead, be born, or die
   compete: ->
-
     # Get the count of live neighbors
-    i = undefined
     count = 0
-    i = 0
-    while i < @neighbors.length
-      count++  if @neighbors[i].get("isAlive")
-      i++
+    for n in @neighbors
+      count++ if n.get 'isAlive'
 
     # If alive
     if @get("isAlive")
       switch count
-
-      #Any live cell with fewer than two live neighbours dies, as if caused by under-population
-        when 0, 1
+        when 0, 1   # Any live cell with fewer than two live neighbours dies, as if caused by under-population
           @kill()
-      #Any live cell with two or three live neighbours lives on to the next generation
-        when 2, 3
-          @set "willLive", @get("isAlive")
-      #stays alive
-      #Any live cell with more than three live neighbours dies, as if by overcrowding
-        when 4, 5, 6, 7, 8
+        when 2, 3   # Any live cell with two or three live neighbours lives on to the next generation
+          @birth()
+        else        # Any live cell with more than three live neighbours dies, as if by overcrowding
           @kill()
-
-      # If dead
     else
+      if count is 3 # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction
+        @birth()
 
-      #Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction
-      @birth()  if count is 3
 
+  # Move to the next step in the simulation
   step: ->
-    @set "isAlive", @get("willLive")
-    @set "willLive", null
+    curr = @get 'isAlive'
+    if curr isnt @willLive
+      @set "isAlive", @willLive
 )
 
 # Publicize

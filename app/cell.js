@@ -13,18 +13,25 @@
     },
     initialize: function() {
       _.bindAll(this);
-      this.model.on("change:isAlive", this.render);
-      this.$el.css({
-        width: this.model.get('size'),
-        height: this.model.get('size')
-      });
+      this.model.on("change:isAlive", this.onChangeIsAlive);
       return this.render();
     },
     render: function() {
+      var size, transform;
+      size = this.model.get('size');
+      transform = "translate3d(" + (size * this.model.get('y')) + "px, " + (size * this.model.get('x')) + "px, 0)";
+      return this.$el.css({
+        width: size,
+        height: size,
+        '-webkit-transform': transform,
+        '-moz-transform': transform
+      });
+    },
+    onChangeIsAlive: function() {
       if (this.model.get("isAlive")) {
         return this.$el.addClass("alive");
       } else {
-        return this.$el.removeAttr("class");
+        return this.$el.removeClass("alive");
       }
     },
     mouseover: function() {
@@ -44,7 +51,6 @@
   Model = Backbone.Model.extend({
     defaults: {
       isAlive: false,
-      willLive: null,
       x: null,
       y: null,
       size: null
@@ -79,25 +85,24 @@
       return this.set("isAlive", !this.get("isAlive"));
     },
     kill: function() {
-      return this.set("willLive", false);
+      return this.willLive = false;
     },
     birth: function() {
-      return this.set("willLive", true);
+      return this.willLive = true;
     },
     randomize: function() {
-      this.set("willLive", null);
+      this.willLive = null;
       return this.set("isAlive", !(Math.round(Math.random() * 10) % 5));
     },
     compete: function() {
-      var count, i;
-      i = void 0;
+      var count, n, _i, _len, _ref;
       count = 0;
-      i = 0;
-      while (i < this.neighbors.length) {
-        if (this.neighbors[i].get("isAlive")) {
+      _ref = this.neighbors;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        n = _ref[_i];
+        if (n.get('isAlive')) {
           count++;
         }
-        i++;
       }
       if (this.get("isAlive")) {
         switch (count) {
@@ -106,12 +111,8 @@
             return this.kill();
           case 2:
           case 3:
-            return this.set("willLive", this.get("isAlive"));
-          case 4:
-          case 5:
-          case 6:
-          case 7:
-          case 8:
+            return this.birth();
+          default:
             return this.kill();
         }
       } else {
@@ -121,8 +122,11 @@
       }
     },
     step: function() {
-      this.set("isAlive", this.get("willLive"));
-      return this.set("willLive", null);
+      var curr;
+      curr = this.get('isAlive');
+      if (curr !== this.willLive) {
+        return this.set("isAlive", this.willLive);
+      }
     }
   });
 

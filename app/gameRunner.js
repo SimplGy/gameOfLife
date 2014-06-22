@@ -2,7 +2,7 @@
 (function() {
   var GameRunner, _cellsWide, _pauseLength;
 
-  _pauseLength = 3 * 1000;
+  _pauseLength = 5 * 1000;
 
   _cellsWide = 75;
 
@@ -18,9 +18,6 @@
       this.setElement("#GameOfLife");
       this.render();
       $(window).on("resize", _.debounce(this.render, 100));
-      $("#Pause").on("click", this.onPauseBtnClick);
-      $("#Clear").on("click", this.cleanSlate);
-      $("#Random").on("click", this.randomize);
       return $("#Metabolism").on("change", this.onMetabolismChange);
     },
     render: function() {
@@ -68,7 +65,6 @@
           this.$el.append(curView.el);
           j++;
         }
-        this.$el.append("<br/>");
         i++;
       }
       return _.each(this.cells, (function(cell) {
@@ -76,6 +72,7 @@
       }).bind(this));
     },
     live: function() {
+      console.time('live');
       _.each(this.cells, function(cell) {
         return cell.compete();
       });
@@ -83,30 +80,17 @@
         return cell.step();
       });
       if (!this.paused) {
-        return setTimeout(this.live, this.metabolism);
+        setTimeout(this.live, this.metabolism);
       }
-    },
-    onPauseBtnClick: function() {
-      $("#Pause").attr('disabled', true);
-      this.stop();
-      return setTimeout((function(_this) {
-        return function() {
-          $("#Pause").removeAttr('disabled');
-          return _this.start();
-        };
-      })(this), _pauseLength);
+      return console.timeEnd('live');
     },
     stop: function() {
-      $("body").removeClass("running");
-      this.paused = true;
-      return $("#Start").text("Start");
+      return this.paused = true;
     },
     start: function() {
-      $("body").addClass("running");
       this.paused = false;
       this.onMetabolismChange();
-      this.live();
-      return $("#Start").text("Stop");
+      return this.live();
     },
     cleanSlate: function() {
       _.each(this.cells, function(cell) {

@@ -1,5 +1,5 @@
 
-_pauseLength = 3 * 1000
+_pauseLength = 5 * 1000
 _cellsWide = 75
 
 GameRunner = Backbone.View.extend(
@@ -15,9 +15,7 @@ GameRunner = Backbone.View.extend(
     @render()
     $(window).on "resize", _.debounce @render, 100
     # UI Event Bindings
-    $("#Pause").on "click", @onPauseBtnClick
-    $("#Clear").on "click", @cleanSlate
-    $("#Random").on "click", @randomize
+#    $("#Clear").on "click", @cleanSlate
     $("#Metabolism").on "change", @onMetabolismChange
 
   render: ->
@@ -67,7 +65,6 @@ GameRunner = Backbone.View.extend(
         @cells.push curModel
         @$el.append curView.el
         j++
-      @$el.append "<br/>"
       i++
 
     # Give each cell a reference to all its neighbors
@@ -79,33 +76,22 @@ GameRunner = Backbone.View.extend(
 
   # -------------------------------------------- Run Loop
   live: ->
+    console.time 'live'
     _.each @cells, (cell) -> cell.compete()         # Determine what to do in the next step
     _.each @cells, (cell) -> cell.step()            # Live out the next step
     setTimeout @live, @metabolism  unless @paused   # Keep on simulating life
+    console.timeEnd 'live'
 
 
 
   # -------------------------------------------- User Actions
-  onPauseBtnClick: ->
-#    return if @paused
-    $("#Pause").attr 'disabled', true
-    @stop()
-    setTimeout =>
-      $("#Pause").removeAttr 'disabled'
-      @start()
-    , _pauseLength
-
   stop: ->
-    $("body").removeClass "running"
     @paused = true
-    $("#Start").text "Start"
 
   start: ->
-    $("body").addClass "running"
     @paused = false
     @onMetabolismChange()
     @live()
-    $("#Start").text "Stop"
 
   cleanSlate: ->
     _.each @cells, (cell) -> cell.kill()
@@ -119,6 +105,7 @@ GameRunner = Backbone.View.extend(
   onMetabolismChange: ->
     speed = $("#Metabolism").val()                # 0-100 scale
     @metabolism = Math.abs(speed - 100) * 2 + 10  # Convert to a frame rate where lower is faster
+#    console.log "Metabolism Changed", @metabolism
 )
 
 # Publicize
