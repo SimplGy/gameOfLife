@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Conway's Game of Life</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- 3rd Party -->
+    <script src="../lib/zepto/dist/zepto.min.js"></script>
+    <script src="../lib/underscore/underscore-min.js"></script>
+    <script src="../lib/backbone/backbone-min.js"></script>
+    <!-- Mineeeee! -->
+    <script src="app.js"></script>
+    <script src="cell.js"></script>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+
+<p>
+    <button id="Start">Start</button>
+    <button id="Clear">Clear</button>
+    <button id="Random">Randomize</button>
+    <label for="Metabolism">Metabolism</label>
+    <input id="Metabolism" type="text" size="3" placeholder="100"/>
+</p>
+<p>
+    This is a Backbone.js implementation of <a href="http://en.wikipedia.org/wiki/Conway_game_of_life">Conway's Game of Life</a>. On
+    <a href="https://github.com/SimpleAsCouldBe/gameOfLife">github</a>.
+</p>
+<div id="GameOfLife" class="gameOfLife"></div>
+
+
+
+
+<script>
+    // Determine game size by Screen size
+    var gameOfLife,
+        cellSize = 14,
+        availWidth = window.innerWidth - 40,
+        availHeight = window.innerHeight - 80,
+        colCount = Math.floor( availWidth / cellSize ),
+        rowCount = Math.floor( availHeight / cellSize )
+
+    ;$(function(){
+        gameOfLife = new Application(colCount, rowCount, cellSize)
+    })
+</script>
+</body>
+</html>
