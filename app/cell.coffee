@@ -15,13 +15,13 @@ View = Backbone.View.extend(
 
   render: ->
     size = @model.get 'size'
-    transform = "translate3d(#{size * @model.get 'y'}px, #{size * @model.get 'x'}px, 0)"
+    transform = "translate3d(#{size * @model.get 'y'}px, #{size * @model.get 'x'}px, 0)"  # Faster than pos:abs. Like 4ms vs 8ms per step
     @$el.css
       width:  size
       height: size
 #      left:   size * @model.get 'y' # the x/y is backwards, but works for the other methods
 #      top:    size * @model.get 'x'
-      '-webkit-transform': transform # Faster than pos:abs. Like 4ms vs 8ms per step
+      '-webkit-transform': transform
       '-moz-transform': transform
 
 # Change the visual representation of aliveness

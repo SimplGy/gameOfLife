@@ -1,9 +1,7 @@
-$dark: #20150C
-$subtleOnDark: #30251C
-$legible: #C0B5AC
-$quiet: #50453C
-$blue: #94BEE6
-$green: #C2DD96
+@import '__'
+
+
+
 
 
 body
@@ -47,14 +45,13 @@ br
   background-color: $subtleOnDark
   border-radius: 50%
   cursor: pointer
-//.running .gameOfLife i
-//  -webkit-transition: all 0.1s ease-out
-//  -moz-transition: all 0.1s ease-out
-//  -transition: all 0.1s ease-out
+  //transition: background-color .1s ease-in
+
 
 .gameOfLife i.alive
   background-color: $green
   z-index: 1 //live cells should be above others
+  //transition: none
 .gameOfLife i:hover
   background-color: $blue
   z-index: 2 //hover cells should be above everyone

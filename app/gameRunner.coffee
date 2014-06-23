@@ -1,6 +1,7 @@
 
 _pauseLength = 5 * 1000
-_cellsWide = 75
+_cellLimit = 10
+_tooSlow = 30
 
 GameRunner = Backbone.View.extend(
   events:
@@ -12,8 +13,12 @@ GameRunner = Backbone.View.extend(
   initialize: ->
     _.bindAll this
     @setElement "#GameOfLife"
+    @cellLimit = _cellLimit
     @render()
-    $(window).on "resize", _.debounce @render, 100
+    $(window).on "resize", _.debounce =>
+      @cellLimit = _cellLimit
+      @render()
+    , 100
     # UI Event Bindings
 #    $("#Clear").on "click", @cleanSlate
     $("#Metabolism").on "change", @onMetabolismChange
@@ -24,7 +29,6 @@ GameRunner = Backbone.View.extend(
     @randomize()
     @start()
 
-
   startPress: -> @isPressing = true
   endPress: -> @isPressing = false
 
@@ -32,13 +36,11 @@ GameRunner = Backbone.View.extend(
     @$el.empty()
     console.log 'buildCells'
 
-    availWidth = window.innerWidth
-    availHeight = window.innerHeight
     # What size should each cell be?
-    cellSize = availWidth / _cellsWide
+    cellSize = Math.max(window.innerWidth, window.innerHeight) / @cellLimit
     # How many cells wide and tall will fit?
-    @cols = Math.floor availWidth / cellSize
-    @rows = Math.floor availHeight / cellSize
+    @cols = Math.floor window.innerWidth / cellSize
+    @rows = Math.floor window.innerHeight / cellSize
 
     j = undefined
     curModel = undefined
@@ -75,12 +77,50 @@ GameRunner = Backbone.View.extend(
 
 
   # -------------------------------------------- Run Loop
+  # Calls as often as the browser is able to render
+  animationTick: ->
+    return if @paused
+
+
+    # Measure the frame rate, lower cell count until an acceptable frame rate is found
+    # This worked ok, but it took 5-20 seconds to figure out a good cell count, so it wasn't good enough.
+#    @frames = @frames || []
+#    @frames.push Date.now() - @lastFrame || 0
+#    if @frames.length >= 10
+#      # The average of the last 50% of the frames (the first couple frames are always slow)
+#      sum = _.reduce @frames.slice(-(@frames.length * .5)),
+#        (memo, n) -> memo + n
+#      avg = sum / @frames.length
+#      @frames = []
+#      if avg > _tooSlow
+#        console.log "Frame Rate: #{avg}"
+#        console.warn 'Warning, too slow. Taking responsibilities away!'
+#        reduction = if avg - _tooSlow > 100 then 10 else 2 # Reduce by a lot if we're far away from stutter-free
+#        @cellsWide -= reduction
+#        @render()
+#      else
+#        console.debug "#{@cellsWide} cells draw ok"
+
+
+    @lastFrame = Date.now()
+    # Should we move the simulation forward a step?
+    stepDiff = Date.now() - @lastStep
+    @live() unless @metabolism > stepDiff # this flip of logic lets it handle NaN (initial) as a "should-render" case
+    # Always request the next animation frame
+    window.requestAnimationFrame @animationTick
+
+  # Called whenever the simulation is supposed to take a step forward
   live: ->
-    console.time 'live'
+    return if @paused
+#    console.log "#{Date.now() - @lastStep} >= #{@metabolism}"
+    @lastStep = Date.now()
+#    console.time 'computeCells'
     _.each @cells, (cell) -> cell.compete()         # Determine what to do in the next step
     _.each @cells, (cell) -> cell.step()            # Live out the next step
-    setTimeout @live, @metabolism  unless @paused   # Keep on simulating life
-    console.timeEnd 'live'
+#    console.timeEnd 'computeCells'
+#    setTimeout @live, @metabolism  unless @paused   # Keep on simulating life
+
+
 
 
 
@@ -91,7 +131,7 @@ GameRunner = Backbone.View.extend(
   start: ->
     @paused = false
     @onMetabolismChange()
-    @live()
+    @animationTick()
 
   cleanSlate: ->
     _.each @cells, (cell) -> cell.kill()
