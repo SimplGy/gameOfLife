@@ -1,6 +1,6 @@
 
-_pauseLength = 5 * 1000
-_cellLimit = 10
+_pauseLength = 2 * 1000
+_cellLimit = 50 # How many cells should we draw, limited by the longest side? This number is the key performance pusher.
 _tooSlow = 30
 
 GameRunner = Backbone.View.extend(
@@ -14,6 +14,9 @@ GameRunner = Backbone.View.extend(
     _.bindAll this
     @setElement "#GameOfLife"
     @cellLimit = _cellLimit
+    @styleNode = document.createElement 'style'
+    @styleNode.type = 'text/css'
+    document.head.appendChild @styleNode
     @render()
     $(window).on "resize", _.debounce =>
       @cellLimit = _cellLimit
@@ -29,8 +32,24 @@ GameRunner = Backbone.View.extend(
     @randomize()
     @start()
 
-  startPress: -> @isPressing = true
-  endPress: -> @isPressing = false
+  startPress: ->
+    @paused = true
+    @isPressing = true
+    @pressTime = Date.now()
+  endPress:   ->
+    if Date.now() - @pressTime > 400
+      @longPress = true
+    # If there's a long press, pause for a while to let the person interact with the simulation in more detail.
+    if @longPress
+      clearTimeout @timer
+      @timer = setTimeout =>
+        @paused = false
+        @longPress = false
+      ,
+        _pauseLength
+    else
+      @paused = false
+    @isPressing = false
 
   buildCells: ->
     @$el.empty()
@@ -41,6 +60,8 @@ GameRunner = Backbone.View.extend(
     # How many cells wide and tall will fit?
     @cols = Math.floor window.innerWidth / cellSize
     @rows = Math.floor window.innerHeight / cellSize
+    # Set the css size of the cells
+    @setStylesheetRule ".gameOfLife i { width: #{cellSize}px; height: #{cellSize}px; }"
 
     j = undefined
     curModel = undefined
@@ -79,9 +100,6 @@ GameRunner = Backbone.View.extend(
   # -------------------------------------------- Run Loop
   # Calls as often as the browser is able to render
   animationTick: ->
-    return if @paused
-
-
     # Measure the frame rate, lower cell count until an acceptable frame rate is found
     # This worked ok, but it took 5-20 seconds to figure out a good cell count, so it wasn't good enough.
 #    @frames = @frames || []
@@ -146,6 +164,15 @@ GameRunner = Backbone.View.extend(
     speed = $("#Metabolism").val()                # 0-100 scale
     @metabolism = Math.abs(speed - 100) * 2 + 10  # Convert to a frame rate where lower is faster
 #    console.log "Metabolism Changed", @metabolism
+
+
+  # -------------------------------------------- Helpers
+  setStylesheetRule: (rule) ->
+    @styleNode.innerHTML = ''
+    if @styleNode.stylesheet
+      @styleNode.styleSheet.cssText = rule
+    else
+      @styleNode.appendChild document.createTextNode rule
 )
 
 # Publicize

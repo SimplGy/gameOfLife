@@ -17,8 +17,8 @@ View = Backbone.View.extend(
     size = @model.get 'size'
     transform = "translate3d(#{size * @model.get 'y'}px, #{size * @model.get 'x'}px, 0)"  # Faster than pos:abs. Like 4ms vs 8ms per step
     @$el.css
-      width:  size
-      height: size
+#      width:  size
+#      height: size
 #      left:   size * @model.get 'y' # the x/y is backwards, but works for the other methods
 #      top:    size * @model.get 'x'
       '-webkit-transform': transform
@@ -32,9 +32,8 @@ View = Backbone.View.extend(
       @$el.removeClass "alive"
 
   mouseover: ->
-    if @options.app.isPressing and not @alreadyToggled
-      @model.toggle()
-      @alreadyToggled = true
+    if @options.app.isPressing
+      @model.set isAlive: true
 
   mouseout: ->
     @alreadyToggled = false

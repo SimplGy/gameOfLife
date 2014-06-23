@@ -2,9 +2,9 @@
 (function() {
   var GameRunner, _cellLimit, _pauseLength, _tooSlow;
 
-  _pauseLength = 5 * 1000;
+  _pauseLength = 2 * 1000;
 
-  _cellLimit = 10;
+  _cellLimit = 50;
 
   _tooSlow = 30;
 
@@ -19,6 +19,9 @@
       _.bindAll(this);
       this.setElement("#GameOfLife");
       this.cellLimit = _cellLimit;
+      this.styleNode = document.createElement('style');
+      this.styleNode.type = 'text/css';
+      document.head.appendChild(this.styleNode);
       this.render();
       $(window).on("resize", _.debounce((function(_this) {
         return function() {
@@ -35,9 +38,25 @@
       return this.start();
     },
     startPress: function() {
-      return this.isPressing = true;
+      this.paused = true;
+      this.isPressing = true;
+      return this.pressTime = Date.now();
     },
     endPress: function() {
+      if (Date.now() - this.pressTime > 400) {
+        this.longPress = true;
+      }
+      if (this.longPress) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout((function(_this) {
+          return function() {
+            _this.paused = false;
+            return _this.longPress = false;
+          };
+        })(this), _pauseLength);
+      } else {
+        this.paused = false;
+      }
       return this.isPressing = false;
     },
     buildCells: function() {
@@ -47,6 +66,7 @@
       cellSize = Math.max(window.innerWidth, window.innerHeight) / this.cellLimit;
       this.cols = Math.floor(window.innerWidth / cellSize);
       this.rows = Math.floor(window.innerHeight / cellSize);
+      this.setStylesheetRule(".gameOfLife i { width: " + cellSize + "px; height: " + cellSize + "px; }");
       j = void 0;
       curModel = void 0;
       curView = void 0;
@@ -79,9 +99,6 @@
     },
     animationTick: function() {
       var stepDiff;
-      if (this.paused) {
-        return;
-      }
       this.lastFrame = Date.now();
       stepDiff = Date.now() - this.lastStep;
       if (!(this.metabolism > stepDiff)) {
@@ -127,6 +144,14 @@
       var speed;
       speed = $("#Metabolism").val();
       return this.metabolism = Math.abs(speed - 100) * 2 + 10;
+    },
+    setStylesheetRule: function(rule) {
+      this.styleNode.innerHTML = '';
+      if (this.styleNode.stylesheet) {
+        return this.styleNode.styleSheet.cssText = rule;
+      } else {
+        return this.styleNode.appendChild(document.createTextNode(rule));
+      }
     }
   });
 

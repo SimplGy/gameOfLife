@@ -21,8 +21,6 @@
       size = this.model.get('size');
       transform = "translate3d(" + (size * this.model.get('y')) + "px, " + (size * this.model.get('x')) + "px, 0)";
       return this.$el.css({
-        width: size,
-        height: size,
         '-webkit-transform': transform,
         '-moz-transform': transform
       });
@@ -35,9 +33,10 @@
       }
     },
     mouseover: function() {
-      if (this.options.app.isPressing && !this.alreadyToggled) {
-        this.model.toggle();
-        return this.alreadyToggled = true;
+      if (this.options.app.isPressing) {
+        return this.model.set({
+          isAlive: true
+        });
       }
     },
     mouseout: function() {

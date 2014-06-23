@@ -1,7 +1,7 @@
 gameOfLife
 ==========
 
-[Conway's Game of Life](http://en.wikipedia.org/wiki/Conway_game_of_life) implemented in Backbone.
+[Conway's Game of Life](http://en.wikipedia.org/wiki/Conway_game_of_life) implemented in Backbone. If you haven't heard of it, here's a [sweet video](https://www.youtube.com/watch?v=C2vgICfQawE).
 
 Each cell on the screen is an autonomous Backbone Model, aware of its neighbors and how it should behave in this environment.
 
@@ -23,8 +23,8 @@ I plan to build a vanilla version of this that uses a 2d array for storage and c
 
 ### Backbone.Model.set
 
-Backbone.Model.set is extremely expensive. It uses extend, and 30% of the compute time in my loop was spend on this.
-Using model properties that throw events only for properties where they're really needed resulted in a huge performance gain (120ms to 20ms).
+Backbone.Model.set is extremely expensive. It uses extend, and 30% of the compute time in my loop was spent on this. I was just defaulting properties to null, but this was costly.
+Using model properties that throw events only for properties where they're really needed resulted in a huge performance gain (in the order of 120ms to 20ms).
 
 ### Paint Rectangles
 
@@ -36,10 +36,9 @@ It was faster for this application to paint many (many!) rectangles and composit
 
 ## Planned Features
 
-* Pause while dragging, resume right after
 * Restructure so github pages can deploy it for me
 * #demo: take animated gif of pos:abs version and translate version showing the difference in the paint rectangles. It looks cool and illustrates a good point.
-* Remove Backbone, do in vanilla
+* Build with vanilla JS to model and canvas or d3 to draw
 * #fluff: gameify the clearing of the board, congratulate the player
 * #fluff: For a really nice looking initial state, weight live cells towards the circular center and make it less likely for them to be alive towards the fringes.
 * #fluff: Scale the number of cells until a perf limit is hit (eg: keep adding cells until the `live` loop takes ~7ms to compute)
@@ -48,6 +47,7 @@ It was faster for this application to paint many (many!) rectangles and composit
 
 ## Completed
 
+* Pause while dragging, resume after. Long press pauses so you can click around for a bit
 * Always show N cells at the most (wide or tall).
 * Determine performance bottleneck -- the setting of classes in css is 10% or more of the work. Setting style attribute directly is almost as slow.
 * Convert to coffeescript, because why type moar?
@@ -63,3 +63,5 @@ It was faster for this application to paint many (many!) rectangles and composit
 * Make sure it's not calling render even when there's no change to the model (setting false over the top of false, for example)
 * doing many backbone model `set`s is expensive. 30% of compute time was spend doing `_.extend`, which is part of `.set`
 * Scale the number of cells until the frame rate is good enough -- tried, took too long to calculate and interrupted the animation when reset.
+* #perf: Take advantage of this: A cell that did not change at the last time step, and none of whose neighbours changed, is guaranteed not to change at the current time step as well.
+  * Meh. The issue is dom manipulation time, not algo time.
