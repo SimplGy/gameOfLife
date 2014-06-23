@@ -4,7 +4,7 @@
 
   _pauseLength = 2 * 1000;
 
-  _cellLimit = 50;
+  _cellLimit = 60;
 
   _tooSlow = 30;
 

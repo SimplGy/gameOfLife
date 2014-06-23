@@ -1,6 +1,6 @@
 
 _pauseLength = 2 * 1000
-_cellLimit = 50 # How many cells should we draw, limited by the longest side? This number is the key performance pusher.
+_cellLimit = 60 # How many cells should we draw, limited by the longest side? This number is the key performance pusher.
 _tooSlow = 30
 
 

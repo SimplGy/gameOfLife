@@ -5,6 +5,8 @@ gameOfLife
 
 Each cell on the screen is an autonomous Backbone Model, aware of its neighbors and how it should behave in this environment.
 
+[Running Demo](http://simpleascouldbe.github.io/gameOfLife/)
+
 ## Approach
 
 * Figure out how many rows and cols will fit on the screen
