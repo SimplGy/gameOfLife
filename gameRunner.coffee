@@ -3,6 +3,7 @@ _pauseLength = 2 * 1000
 _cellLimit = 50 # How many cells should we draw, limited by the longest side? This number is the key performance pusher.
 _tooSlow = 30
 
+
 GameRunner = Backbone.View.extend(
   events:
     touchstart: "startPress"
@@ -37,7 +38,7 @@ GameRunner = Backbone.View.extend(
     @isPressing = true
     @pressTime = Date.now()
   endPress:   ->
-    if Date.now() - @pressTime > 400
+    if Date.now() - @pressTime > _pauseLength/2
       @longPress = true
     # If there's a long press, pause for a while to let the person interact with the simulation in more detail.
     if @longPress
@@ -162,7 +163,7 @@ GameRunner = Backbone.View.extend(
 
   onMetabolismChange: ->
     speed = $("#Metabolism").val()                # 0-100 scale
-    @metabolism = Math.abs(speed - 100) * 2 + 10  # Convert to a frame rate where lower is faster
+    @metabolism = Math.abs(speed - 100) * 1.5 + 10  # Convert to a frame rate where lower is faster
 #    console.log "Metabolism Changed", @metabolism
 
 

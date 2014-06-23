@@ -47,7 +47,6 @@ View = Backbone.View.extend(
 
 
 
-
 Model = Backbone.Model.extend(
   defaults:
     isAlive: false

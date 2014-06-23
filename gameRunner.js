@@ -43,7 +43,7 @@
       return this.pressTime = Date.now();
     },
     endPress: function() {
-      if (Date.now() - this.pressTime > 400) {
+      if (Date.now() - this.pressTime > _pauseLength / 2) {
         this.longPress = true;
       }
       if (this.longPress) {
@@ -143,7 +143,7 @@
     onMetabolismChange: function() {
       var speed;
       speed = $("#Metabolism").val();
-      return this.metabolism = Math.abs(speed - 100) * 2 + 10;
+      return this.metabolism = Math.abs(speed - 100) * 1.5 + 10;
     },
     setStylesheetRule: function(rule) {
       this.styleNode.innerHTML = '';

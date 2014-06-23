@@ -38,6 +38,7 @@ It was faster for this application to paint many (many!) rectangles and composit
 
 * Restructure so github pages can deploy it for me
 * #demo: take animated gif of pos:abs version and translate version showing the difference in the paint rectangles. It looks cool and illustrates a good point.
+* display indication when paused and countdown to resume so the behavior is clear
 * Build with vanilla JS to model and canvas or d3 to draw
 * #fluff: gameify the clearing of the board, congratulate the player
 * #fluff: For a really nice looking initial state, weight live cells towards the circular center and make it less likely for them to be alive towards the fringes.
