@@ -31,10 +31,14 @@ Using model properties that throw events only for properties where they're reall
 ### Paint Rectangles
 
 Setting the position of the elements as `absolute` with left and top offsets is not enough to tell the paint system that the elements do not affect each other.
-You can see paint rectangles in the timeline, and using top left positioning, the entire screen is redrawn if even one cell changes. This isn't optimal in theory and wasn't optimal when measured.
-Instead, positioning each cell with a `translate3d` results in separate paintable rectangles for each cell. The frames view of timeline shows all the individual timeline paint events and the composite layer event.
-It was faster for this application to paint many (many!) rectangles and composite them than to paint the whole screen every frame.
+This gif shows the paint rectangles spanning large regions when a few cells change. This isn't optimal in theory and was slower when measured.
 
+![Animated gif of game in action.](/img/paintRegions.gif?raw=true)
+
+Instead, positioning each cell with a `translate3d` results in separate paintable rectangles for each cell. The frames view of timeline shows all the individual timeline paint events and the composite layer event.
+It was faster for this application to paint many (many!) rectangles and composite them than to paint the whole screen every frame. See how each cell gets it's own paint rectangle in this mode:
+
+![Animated gif of game in action.](/img/paintEachCell.gif?raw=true)
 
 ## Planned Features
 
