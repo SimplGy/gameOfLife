@@ -38,7 +38,7 @@ It was faster for this application to paint many (many!) rectangles and composit
 
 ## Planned Features
 
-* Restructure so github pages can deploy it for me
+* #bug: click and hold, drag. click again, delay correctly extends. click and drag again, delay doesn't hold. clearTimeout is only happening on mouseup.
 * #demo: take animated gif of pos:abs version and translate version showing the difference in the paint rectangles. It looks cool and illustrates a good point.
 * display indication when paused and countdown to resume so the behavior is clear
 * Build with vanilla JS to model and canvas or d3 to draw
@@ -50,6 +50,7 @@ It was faster for this application to paint many (many!) rectangles and composit
 
 ## Completed
 
+* Restructure so github pages can deploy it for me
 * Pause while dragging, resume after. Long press pauses so you can click around for a bit
 * Always show N cells at the most (wide or tall).
 * Determine performance bottleneck -- the setting of classes in css is 10% or more of the work. Setting style attribute directly is almost as slow.
