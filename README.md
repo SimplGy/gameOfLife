@@ -6,6 +6,7 @@ gameOfLife
 Each cell on the screen is an autonomous Backbone Model, aware of its neighbors and how it should behave in this environment.
 
 [Running Demo](http://simpleascouldbe.github.io/gameOfLife/)
+![Animated gif of game in action.](/img/interacting.gif?raw=true)
 
 ## Approach
 
