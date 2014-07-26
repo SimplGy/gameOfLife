@@ -1,7 +1,7 @@
 gameOfLife
 ==========
 
-[Conway's Game of Life](http://en.wikipedia.org/wiki/Conway_game_of_life) implemented in Backbone. If you haven't heard of it, here's a [sweet video](https://www.youtube.com/watch?v=C2vgICfQawE).
+Conway's Game of Life implemented in Backbone. [Live Demo](http://simpleascouldbe.github.io/gameOfLife/).
 
 Each cell on the screen is an autonomous Backbone Model, aware of its neighbors and how it should behave in this environment.
 
